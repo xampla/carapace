@@ -1,0 +1,14 @@
+{
+  "name": "@moltbot/carapace",
+  "version": "0.2.0",
+  "type": "module",
+  "description": "Prompt injection detection plugin for Moltbot",
+  "author": "Xavier Marrugat",
+  "homepage": "https://github.com/xampla/carapace",
+  "license": "MIT",
+  "moltbot": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": "carapace",
+  "name": "Carapace",
+  "description": "Prompt injection detection - The hard shell that protects your Moltbot",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "default": true,
+        "description": "Enable Carapace protection"
+      },
+      "scanToolOutputs": {
+        "type": "boolean",
+        "default": true,
+        "description": "Scan tool outputs for indirect injection"
+      },
+      "promptIntelApiKey": {
+        "type": "string",
+        "default": "",
+        "description": "PromptIntel API key for cloud IoPC lookups"
+      },
+      "enableSemantics": {
+        "type": "boolean",
+        "default": false,
+        "description": "Enable Nova semantic matching"
+      },
+      "enableLlm": {
+        "type": "boolean",
+        "default": false,
+        "description": "Enable Nova LLM evaluation"
+      },
+      "llmProvider": {
+        "type": "string",
+        "default": "openai",
+        "description": "LLM provider: openai or anthropic"
+      },
+      "llmApiKey": {
+        "type": "string",
+        "default": "",
+        "description": "API key for LLM provider"
+      }
+    }
+  }
+}
