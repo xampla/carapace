@@ -1,8 +1,8 @@
 # 🦞 Carapace
 
-> *The hard shell that protects your Moltbot from prompt injection.*
+> *The hard shell that protects your OpenClaw from prompt injection.*
 
-Carapace is a prompt injection detection plugin for [Moltbot](https://github.com/moltbot/moltbot), integrating the [Nova Framework](https://novahunting.ai/) and [PromptIntel](https://promptintel.novahunting.ai/) for detection.
+Carapace is a prompt injection detection plugin for [OpenClaw](https://github.com/openclaw/openclaw) (formerly Moltbot/Clawdbot), integrating the [Nova Framework](https://novahunting.ai/) and [PromptIntel](https://promptintel.novahunting.ai/) for detection.
 
 ## ✨ Features
 
@@ -55,16 +55,16 @@ print(result["safe"])       # False
 print(result["threats"])    # [{rule, category, severity, matched}]
 ```
 
-## 🔌 Moltbot Plugin
+## 🔌 OpenClaw Plugin
 
-Carapace integrates with [Moltbot](https://github.com/moltbot/moltbot) to protect your AI assistant:
+Carapace integrates with [OpenClaw](https://github.com/openclaw/openclaw) to protect your AI assistant:
 
 ```bash
 # Symlink the plugin folder
-ln -s $(pwd)/plugin ~/.moltbot/extensions/carapace
+ln -s $(pwd)/plugin ~/.openclaw/extensions/carapace
 ```
 
-Configure in your `moltbot.yaml`:
+Configure in your `openclaw.yaml`:
 
 ```yaml
 plugins:
@@ -84,7 +84,7 @@ plugins:
         llmApiKey: ""                # API key for LLM provider
 ```
 
-> **Note:** The `llmApiKey` must be configured separately from Moltbot's provider keys. You can either set it in the plugin config above, or use environment variables (`OPENAI_API_KEY` or `ANTHROPIC_API_KEY`).
+> **Note:** The `llmApiKey` must be configured separately from OpenClaw's provider keys. You can either set it in the plugin config above, or use environment variables (`OPENAI_API_KEY` or `ANTHROPIC_API_KEY`).
 
 ### How It Works
 
@@ -117,12 +117,12 @@ The warning is injected into the session transcript, so the agent sees it when p
 
 ### Current Limitations
 
-⚠️ **Tool Output Warnings Only**: Currently, Carapace can only inject warnings into tool outputs via the `tool_result_persist` hook. The following hooks are defined in Moltbot but not yet wired up:
+⚠️ **Tool Output Warnings Only**: Currently, Carapace can only inject warnings into tool outputs via the `tool_result_persist` hook. The following hooks are defined in OpenClaw but not yet wired up:
 
 - `before_tool_call` — Would allow blocking dangerous commands before execution
 - `message_received` — Would allow scanning incoming user messages
 
-Until these hooks are implemented in Moltbot's agent loop, Carapace cannot proactively block malicious inputs. It can only warn the agent about suspicious content in tool outputs.
+Until these hooks are implemented in OpenClaw's agent loop, Carapace cannot proactively block malicious inputs. It can only warn the agent about suspicious content in tool outputs.
 
 ### RPC Endpoints
 
@@ -169,8 +169,8 @@ carapace/
 ├── src/
 │   └── scanner.py        # CarapaceScanner (wraps Nova Framework)
 ├── plugin/
-│   ├── clawdbot.plugin.json
-│   └── index.ts          # Moltbot integration
+│   ├── openclaw.plugin.json
+│   └── index.ts          # OpenClaw integration
 ├── rules/                # Nova detection rules (from nova-rules repo)
 └── tests/
 ```
@@ -196,7 +196,7 @@ The IoPC (Indicators of Prompt Compromise) database and API.
 ### [Thomas Roccia (@fr0gger_)](https://twitter.com/fr0gger_)
 Creator of Nova Framework and PromptIntel. Check out his [blog](https://blog.securitybreak.io) for AI security insights!
 
-### [Moltbot](https://github.com/moltbot/moltbot)
+### [OpenClaw](https://github.com/openclaw/openclaw)
 The AI assistant that Carapace protects. 🦞
 
 ## 📄 License
