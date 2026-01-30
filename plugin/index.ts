@@ -1,7 +1,7 @@
 /**
- * 🦞 Carapace - Moltbot Plugin
+ * 🦞 Carapace - OpenClaw Plugin
  *
- * The hard shell that protects your Moltbot from prompt injection.
+ * The hard shell that protects your OpenClaw from prompt injection.
  * Uses Nova Framework + PromptIntel for detection.
  */
 

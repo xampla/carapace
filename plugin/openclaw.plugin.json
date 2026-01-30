@@ -1,7 +1,7 @@
 {
   "id": "carapace",
   "name": "Carapace",
-  "description": "Prompt injection detection - The hard shell that protects your Moltbot",
+  "description": "Prompt injection detection - The hard shell that protects your OpenClaw",
   "configSchema": {
     "type": "object",
     "additionalProperties": false,
