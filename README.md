@@ -72,6 +72,7 @@ plugins:
     carapace:
       enabled: true
       config:
+        blockDangerousCommands: true # Block high-severity threats before tool execution
         scanToolOutputs: true        # Scan tool outputs for indirect injection
 
         # PromptIntel (optional)
@@ -88,12 +89,50 @@ plugins:
 
 ### How It Works
 
+Carapace uses two hooks to protect your agent:
+
+#### 1. Pre-execution Blocking (`before_tool_call`)
+
 ```
-Agent executes tool (exec, read, web_fetch, etc.)
+Agent wants to run a tool
+       │
+       ▼
+┌─────────────────────────────────────────────────┐
+│  before_tool_call                               │
+│                                                 │
+│  exec/bash/shell → scan command                 │
+│  read            → scan file path               │
+│  web_fetch       → scan URL                     │
+└─────────────────────────────────────────────────┘
+       │
+       ▼
+  High/Critical threat?
+       │
+   ┌───┴───┐
+   │  Yes  │──→ BLOCKED: Tool call rejected
+   │       │    "Blocked by Carapace: [input type]
+   │       │     contains N threat(s) (category, severity)"
+   └───────┘
+       │ No
+       ▼
+  Low/Medium threat?
+       │
+   ┌───┴───┐
+   │  Yes  │──→ WARNING logged, but tool allowed
+   └───────┘
+       │
+       ▼
+   Tool executes
+```
+
+#### 2. Output Scanning (`tool_result_persist`)
+
+```
+Tool returns output (exec, read, web_fetch, etc.)
        │
        ▼
 ┌─────────────────────┐
-│ tool_result_persist │  Carapace scans the tool output
+│ tool_result_persist │  Carapace scans the output
 │                     │  for prompt injection patterns
 └─────────────────────┘
        │
@@ -113,22 +152,31 @@ Agent executes tool (exec, read, web_fetch, etc.)
 └─────────────────────┘
 ```
 
-The warning is injected into the session transcript, so the agent sees it when processing the tool result and can make informed decisions about the content.
+### Threat Severity Behavior
+
+| Severity | Before Tool Call | Tool Output |
+|----------|------------------|-------------|
+| `low/medium` | Warn, allow | Prepend warning |
+| `high/critical` | **BLOCK** | Prepend warning |
+
+### Scanned Tools
+
+| Tool | What's Scanned | Scanner |
+|------|----------------|---------|
+| `exec`, `bash`, `shell` | Command parameter | Command scanner |
+| `read` | File path | Text scanner |
+| `web_fetch` | URL | Text scanner |
 
 ### Current Limitations
 
-⚠️ **Tool Output Warnings Only**: Currently, Carapace can only inject warnings into tool outputs via the `tool_result_persist` hook. The following hooks are defined in OpenClaw but not yet wired up:
-
-- `before_tool_call` — Would allow blocking dangerous commands before execution
-- `message_received` — Would allow scanning incoming user messages
-
-Until these hooks are implemented in OpenClaw's agent loop, Carapace cannot proactively block malicious inputs. It can only warn the agent about suspicious content in tool outputs.
+- **No `after_tool_call` Hook**: OpenClaw hasn't wired up the `after_tool_call` hook yet ([#6535](https://github.com/openclaw/openclaw/issues/6535)). This limits post-execution telemetry (timing, success/failure metrics). Output scanning still works via `tool_result_persist`.
 
 ### RPC Endpoints
 
-The plugin exposes two RPC endpoints:
+The plugin exposes three RPC endpoints:
 
 - **`carapace.scan`** — Manually scan text for threats
+- **`carapace.scanCommand`** — Manually scan a shell command for threats
 - **`carapace.status`** — Check plugin configuration status
 
 ## 🔧 CLI Options
